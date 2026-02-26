@@ -1,0 +1,43 @@
+name: Build and Release Persian TTS Package
+
+on:
+  push:
+    branches: [ main ]
+    tags:
+      - 'v*'
+  workflow_dispatch:  # امکان اجرای دستی
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create tarball of voice data
+        run: |
+          echo "📦 Creating tarball of Persian voice data..."
+          # اگر پوشه‌های داده وجود دارند، آن‌ها را فشرده کن
+          if [ -d "espeak-ng-data" ] || [ -d "voices" ]; then
+            tar -czf espeak-persian-data.tar.gz espeak-ng-data/ voices/ 2>/dev/null || echo "⚠️ No data folders found, skipping tarball creation"
+          else
+            # اگر ساختار متفاوت است (مثلاً داده‌ها در ریشه هستند)
+            tar -czf espeak-persian-data.tar.gz . --exclude=.git --exclude=.github
+          fi
+          ls -lh espeak-persian-data.tar.gz || echo "❌ Tarball not created"
+
+      - name: Upload artifact (for debugging)
+        uses: actions/upload-artifact@v4
+        with:
+          name: espeak-persian-data
+          path: espeak-persian-data.tar.gz
+
+      - name: Create Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          name: 📢 بسته صوتی فارسی ${{ github.ref_name }}
+          body_path: release_notes.md
+          files: espeak-persian-data.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
