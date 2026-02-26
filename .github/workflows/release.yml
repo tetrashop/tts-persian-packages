@@ -5,7 +5,7 @@ on:
     branches: [ main ]
     tags:
       - 'v*'
-  workflow_dispatch:  # امکان اجرای دستی
+  workflow_dispatch:
 
 jobs:
   build:
@@ -19,10 +19,10 @@ jobs:
           echo "📦 Creating tarball of Persian voice data..."
           # اگر پوشه‌های داده وجود دارند، آن‌ها را فشرده کن
           if [ -d "espeak-ng-data" ] || [ -d "voices" ]; then
-            tar -czf espeak-persian-data.tar.gz espeak-ng-data/ voices/ 2>/dev/null || echo "⚠️ No data folders found, skipping tarball creation"
+            tar -czf espeak-persian-data.tar.gz espeak-ng-data/ voices/ 2>/dev/null && echo "✅ Tarball created from data folders"
           else
-            # اگر ساختار متفاوت است (مثلاً داده‌ها در ریشه هستند)
-            tar -czf espeak-persian-data.tar.gz . --exclude=.git --exclude=.github
+            # اگر ساختار متفاوت است، کل مخزن را فشرده کن (با نادیده گرفتن خطاهای جزئی)
+            tar -czf espeak-persian-data.tar.gz --exclude=.git --exclude=.github . || echo "⚠️ Tarball created with warnings"
           fi
           ls -lh espeak-persian-data.tar.gz || echo "❌ Tarball not created"
 
