@@ -112,3 +112,8 @@ MIT License
   <sub>ساخته شده با ❤️ توسط تیم TetraShop</sub>
 </div>
 <!-- Trigger deploy: Mon Aug 17 01:50:44 +0330 2026 -->
+
+## 🌐 دیپلوی
+
+- **URL:** [https://tts-persian-packages.vercel.app](https://tts-persian-packages.vercel.app)
+- **وضعیت:** ✅ فعال
